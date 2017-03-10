@@ -6,27 +6,24 @@ public class CylinderRay : MonoBehaviour {
 
 	private RaycastHit hitInfo;
 	private Ray myRay;
-	private Vector3 shootOffset;
-	private Quaternion rotOffset;
-	public Planet thisPlanet;
+	private Transform hitPlanetPoint;
 
 	void Start(){
-		shootOffset = new Vector3(-5,0,0);
-		print(transform.position);
-		print(thisPlanet.transform.position);
-		shootOffset = (transform.position - thisPlanet.transform.position).normalized;
-		print(shootOffset);
-		rotOffset = Quaternion.LookRotation(shootOffset);
-		print(rotOffset);
-		Debug.DrawRay(transform.position-shootOffset,shootOffset, Color.cyan);
+		myRay = new Ray(transform.position, Vector3.left);
 	}
 	void Update () {
-		myRay = new Ray(transform.position-shootOffset,shootOffset);	
-		Debug.DrawRay(transform.position-shootOffset,shootOffset, Color.cyan);
 	}
 
 	void FixedUpdate(){
-		if (Physics.Raycast(myRay, out hitInfo))
-			print("OHHHH SHIT" + hitInfo.distance);
+		if (Physics.Raycast(myRay, out hitInfo)){
+			Vector3 pointHit = hitInfo.point;
+			pointHit -= GetComponent<CylinderRay>().gameObject.transform.position;
+			// just convert to a vector2
+			Vector2 v2HitPoint = (Vector2)pointHit;
+
+			// remember that this is just the X and Y values relative to spheres centre point.
+			Debug.Log("V2 local position hit : " + v2HitPoint);
+			Debug.Log("also printing :" + pointHit);
 	}
+}
 }
